@@ -71,20 +71,29 @@ class ContourPilot:
 
                 filename=filename[0]
                 params=params[0]
+                # Add debugging
+                print(f"Original filename: {filename}")
+                print(f"Split by forward slash: {filename.split('/')}")
+                print(f"Directory name: {os.path.dirname(filename)}")
+                print(f"Base directory: {os.path.basename(os.path.dirname(filename))}")
+                
                 img = np.squeeze(img)
 
                 predicted_array = self.__generate_segmentation__(img,params)
-
-                out_dir = os.path.join(self.Output_path, os.path.basename(os.path.dirname(filename)) + '_(DL)')
-                if not os.path.exists(out_dir):
-                    os.makedirs(out_dir)
-                                
+                
+                # Extract patient directory name in a cross-platform way
+                patient_name = os.path.basename(os.path.dirname(filename))
+                output_dir = os.path.join(self.Output_path, patient_name + '_(DL)')
+                
+                if not os.path.exists(output_dir):
+                    os.makedirs(output_dir)
+                                                
                 generated_img = sitk.GetImageFromArray(predicted_array)
                 generated_img.SetSpacing(params['original_spacing'])
                 generated_img.SetOrigin(params['img_origin'])
-                sitk.WriteImage(generated_img, os.path.join(out_dir, 'DL_mask.nrrd'))
+                sitk.WriteImage(generated_img, os.path.join(output_dir, 'DL_mask.nrrd'))
                 temp_data=sitk.ReadImage(filename)
-                sitk.WriteImage(generated_img, os.path.join(out_dir, 'image.nrrd'))
+                sitk.WriteImage(temp_data, os.path.join(output_dir, 'image.nrrd'))
 
                 if count == len(self.Patients_gen):
                     return 0
