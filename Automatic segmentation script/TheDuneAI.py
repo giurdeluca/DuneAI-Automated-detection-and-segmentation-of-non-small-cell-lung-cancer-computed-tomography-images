@@ -71,11 +71,6 @@ class ContourPilot:
 
                 filename=filename[0]
                 params=params[0]
-                # Add debugging
-                print(f"Original filename: {filename}")
-                print(f"Split by forward slash: {filename.split('/')}")
-                print(f"Directory name: {os.path.dirname(filename)}")
-                print(f"Base directory: {os.path.basename(os.path.dirname(filename))}")
                 
                 img = np.squeeze(img)
 
